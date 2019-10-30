@@ -6,7 +6,7 @@ NOTE: It is assumed you are using Xorg and not Wayland as your display server wi
 
 ##### Increase the amount of video memory
 
-`virsh edit --domain $DOMAIN`
+On the host issue `sudo virsh edit --domain $DOMAIN`
 
 Locate the `<video>` stanza and set the `vgamem` to something reasonable (units are in kilobyes)
 

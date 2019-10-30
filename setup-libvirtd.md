@@ -23,7 +23,7 @@ NOTE: In future I will investigate cutting this down and installing specific pac
 ```
 sudo dnf update --refresh
 sudo dnf install @virtualization
-sudo dnf install libguestfs libguestfs-tools bridge-utils
+sudo dnf install libguestfs libguestfs-tools bridge-utils virt-top
 ```
 
 ### Add user to required groups
@@ -168,9 +168,12 @@ Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10` (owned to root with mo
 
 ```
 # Only bind to the virtual bridge (avoids exposure on public interface and conflicts with other instances) 
-except-interface=lo
-interface=virbr10
-bind-dynamic
+# except-interface=lo
+# interface=virbr10
+# bind-dynamic
+
+# Listen explicitly on IPv4 only, on the address bound to virbr10
+listen-address=192.168.100.1
 
 # IPv4 addresses to offer to VMs (should match subnet of bridge)
 dhcp-range=192.168.100.2,192.168.100.254

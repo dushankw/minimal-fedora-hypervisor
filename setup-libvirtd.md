@@ -108,7 +108,7 @@ ACTION=="add", SUBSYSTEM=="module", KERNEL=="br_netfilter", RUN+="/sbin/sysctl -
 
 ##### Configure iptables
 
-The following is a basic IPv4 configuration that you can use (I do not require IPv6 for my VMs or host and configure blanket DROP rules on the INPUT/FORWARD/OUTPUT chains)
+The following is a basic IPv4 configuration that you can use (I do not require IPv6 for my VMs or host and configure blanket DROP rules on the INPUT/FORWARD/OUTPUT ip6tables chains)
 
 Place the configuration in `/etc/sysconfig/iptables` (owned to root with mode 0600)
 

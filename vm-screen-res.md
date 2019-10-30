@@ -39,7 +39,7 @@ $ xrandr --output Virtual-0 --mode 2560x1440_60.00
 Create `/usr/share/X11/xorg.conf.d/10-monitor.conf` (owned by root with mode 0644)
 
 ```
-section "Monitor"
+Section "Monitor"
     Identifier "Virtual-0 "
     Modeline "2560x1440_60.00"  312.25  2560 2752 3024 3488  1440 1443 1448 1493 -hsync +vsync
     Modeline "3840x2160_60.00"  712.75  3840 4160 4576 5312  2160 2163 2168 2237 -hsync +vsync

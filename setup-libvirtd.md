@@ -16,13 +16,14 @@ sudo systemctl start iptables ip6tables
 sudo systemctl enable iptables ip6tables
 ```
 
-### Install virtualization meta-package
+### Install virtualization meta-package and some required utilities
 
 NOTE: In future I will investigate cutting this down and installing specific packages
 
 ```
 sudo dnf update --refresh
 sudo dnf install @virtualization
+sudo dnf install libguestfs libguestfs-tools bridge-utils
 ```
 
 ### Add user to required groups
@@ -39,7 +40,7 @@ It is assumed we are using NetworkManager
 
 Libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system
 
-Disable the default network
+##### Disable the default network, create a bridge and enable packet forwarding
 
 ```
 sudo virsh net-destroy default
@@ -67,8 +68,6 @@ case "$2" in
 esac
 ```
 
-Create the bridge
-
 Create `/etc/sysconfig/network-scripts/ifcfg-virbr10` (owned to root with mode 0644)
 
 ```
@@ -91,9 +90,23 @@ net.ipv4.ip_forward = 1
 net.ipv4.conf.all.forwarding=1
 ```
 
-Issue `sysctl -p` to load changes
+For performance and security reasons, disable netfilter for bridges (see https://bugzilla.redhat.com/show_bug.cgi?id=512206)
 
-Configure iptables
+Create `/etc/sysctl.d/97-bridge.conf` (owned to root with mode 0644)
+
+```
+net.bridge.bridge-nf-call-ip6tables=0
+net.bridge.bridge-nf-call-iptables=0
+net.bridge.bridge-nf-call-arptables=0
+```
+
+Create `/etc/udev/rules.d/99-bridge.rules` (owned to root with mode 0644) to load the rules when the bridge module is loaded
+
+```
+ACTION=="add", SUBSYSTEM=="module", KERNEL=="br_netfilter", RUN+="/sbin/sysctl -p /etc/sysctl.d/97-bridge.conf"
+```
+
+##### Configure iptables
 
 The following is a basic IPv4 configuration that you can use (I do not require IPv6 for my VMs or host and configure blanket DROP rules on the INPUT/FORWARD/OUTPUT chains)
 
@@ -143,7 +156,7 @@ COMMIT
 COMMIT
 ```
 
-Configure dnsmasq which is used for DHCP and DNS forwarding for VMs
+##### Configure dnsmasq which is used for DHCP and DNS forwarding for VMs
 
 ```
 mkdir -p /var/lib/dnsmasq/virbr10
@@ -151,7 +164,7 @@ touch /var/lib/dnsmasq/virbr10/hostsfile
 touch /var/lib/dnsmasq/virbr10/leases
 ```
 
-Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10` (owned to root with mod 0644)
+Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10` (owned to root with mode 0644)
 
 ```
 # Only bind to the virtual bridge (avoids exposure on public interface and conflicts with other instances) 
@@ -202,3 +215,7 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
+
+##### Reboot
+
+Many things have changed at this point, reboot the system and your hypervisor should be functional

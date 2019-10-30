@@ -25,20 +25,16 @@ $ cvt 2560 1440
 Modeline "2560x1440_60.00"  312.25  2560 2752 3024 3488  1440 1443 1448 1493 -hsync +vsync
 ```
 
-Create modeline
-
 ```
 $ xrandr --newmode "2560x1440_60.00"  312.25  2560 2752 3024 3488  1440 1443 1448 1493 -hsync +vsync
 ```
-
-Add and use it
 
 ```
 $ xrandr --addmode Virtual-0 2560x1440_60.00
 $ xrandr --output Virtual-0 --mode 2560x1440_60.00
 ```
 
-Persist between reboots
+##### Persist between reboots
 
 Create `/usr/share/X11/xorg.conf.d/10-monitor.conf` (owned by root with mode 0644)
 

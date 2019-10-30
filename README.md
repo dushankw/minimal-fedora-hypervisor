@@ -2,4 +2,4 @@
 
 ### credit
 
-Portions of this guide refer to documentation found on https://jamielinux.com
+Portions of this guide (networking stuff) refer to documentation found on https://jamielinux.com

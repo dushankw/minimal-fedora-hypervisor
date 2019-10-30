@@ -38,7 +38,7 @@ sudo usermod -a -G libvirt $USER
 
 It is assumed we are using NetworkManager
 
-Libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system
+Libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system (and the default network will manipulate iptables without your permission)
 
 ##### Disable the default network, create a bridge and enable packet forwarding
 
@@ -217,6 +217,19 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
+```
+
+### Hardening
+
+##### Limit access to the libvirtd control sockets
+
+Add the following to `/etc/libvirt/libvirtd.conf`
+
+```
+unix_sock_group = "libvirt"
+unix_sock_ro_perms = "0770"
+unix_sock_rw_perms = "0770"
+unix_sock_admin_perms = "0700"
 ```
 
 ### Reboot

@@ -232,6 +232,22 @@ unix_sock_rw_perms = "0770"
 unix_sock_admin_perms = "0700"
 ```
 
+##### Hardening for qemu
+
+Add/un-comment the following lines in `/etc/libvirt/qemu.conf`
+
+```
+vnc_auto_unix_socket = 1
+spice_auto_unix_socket = 1
+security_driver = "selinux"
+security_default_confined = 1
+security_require_confined = 1
+set_process_name = 1
+seccomp_sandbox = 1
+```
+
+NOTE: Look into configuring Server CA + TLS encrypted network transports
+
 ### Reboot
 
 Many things have changed at this point, reboot the system and your hypervisor should be functional

@@ -18,3 +18,9 @@ Find the `<interface>` stanza and add:
   <filterref filter='clean-traffic'/>
 </interface>
 ```
+
+##### NTP Issues
+
+If you hibernate your VMs a lot, you may find the clock gets out of sync and takes a while to drift back
+
+Adding `makestep 1 -1` to `/etc/chrony.conf` (chrony being the NTP client used in Fedora) will greatly reduce how many steps it takes to get back into sync

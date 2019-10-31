@@ -23,7 +23,7 @@ NOTE: In future I will investigate cutting this down and installing specific pac
 ```
 sudo dnf update --refresh
 sudo dnf install @virtualization
-sudo dnf install libguestfs libguestfs-tools bridge-utils virt-top
+sudo dnf install libguestfs libguestfs-tools bridge-utils virt-top ebtables libvirt-daemon-config-nwfilter
 ```
 
 ### Add user to required groups

@@ -4,3 +4,17 @@ With our secure defaults, all that is required is to set the SPICE Listen direct
 
 ![spice config in guest vm](pic/spice.png)
 
+##### Hypervisor level network filtering for VM
+
+This will prevent various spoofing from the guest (eg: MAC, ARP), see  https://libvirt.org/firewall.html for more
+
+On the host issue `sudo virsh edit --domain $DOMAIN`
+
+Find the `<interface>` stanza and add:
+
+```
+<interface type='bridge'>
+  <SNIP>
+  <filterref filter='clean-traffic'/>
+</interface>
+```

@@ -14,7 +14,7 @@ Find the `<interface>` stanza and add:
 
 ```
 <interface type='bridge'>
-  <SNIP>
+  ...
   <filterref filter='clean-traffic'/>
 </interface>
 ```

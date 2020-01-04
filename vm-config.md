@@ -24,3 +24,11 @@ Find the `<interface>` stanza and add:
 If you hibernate your VMs a lot, you may find the clock gets out of sync and takes a while to drift back
 
 Adding `makestep 1 -1` to `/etc/chrony.conf` (chrony being the NTP client used in Fedora) will greatly reduce how many steps it takes to get back into sync
+
+##### Shrinking qcow2 volumes
+
+If you need to reclaim available space
+
+```
+qemu-img convert -O qcow2 source.qcow2 shrunk.qcow2
+```

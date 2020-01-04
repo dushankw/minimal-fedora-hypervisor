@@ -164,7 +164,7 @@ touch /var/lib/dnsmasq/virbr10/hostsfile
 touch /var/lib/dnsmasq/virbr10/leases
 ```
 
-Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10` (owned to root with mode 0644)
+Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10/dnsmasq.conf` (owned to root with mode 0644)
 
 ```
 # Only bind to the virtual bridge (avoids exposure on public interface and conflicts with other instances) 

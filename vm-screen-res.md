@@ -46,3 +46,9 @@ Section "Monitor"
     Option "PreferredMode" "2560x1440_60.00"
 EndSection
 ```
+
+##### virt-manager auto-resizing
+
+Enable the setting "Resize guest with window" in virt-manager
+
+![virt-manager display config](pic/res.png)

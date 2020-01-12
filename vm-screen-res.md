@@ -51,4 +51,6 @@ EndSection
 
 Enable the setting "Resize guest with window" in virt-manager
 
+This may be all you need to do!
+
 ![virt-manager display config](pic/res.png)

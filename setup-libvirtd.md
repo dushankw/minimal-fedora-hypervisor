@@ -176,7 +176,7 @@ Create a config for dnsmasq in `/var/lib/dnsmasq/virbr10/dnsmasq.conf` (owned to
 listen-address=192.168.100.1
 
 # IPv4 addresses to offer to VMs (should match subnet of bridge)
-dhcp-range=192.168.100.2,192.168.100.254
+dhcp-range=192.168.100.100,192.168.100.200
 
 # Set this to at least the total number of addresses in DHCP-enabled subnets
 dhcp-lease-max=1000

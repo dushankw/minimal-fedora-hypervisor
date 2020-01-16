@@ -8,7 +8,7 @@ NOTE: It is assumed you are using Xorg and not Wayland as your display server wi
 
 Enable the setting "Resize guest with window" in virt-manager via the "Edit > Preferences > Console" menu
 
-This may be all you need to do! If this does not work, read on.
+This may be all you need to do (though you likely still want to increase the video memory)! If this does not work, read on.
 
 ![virt-manager display config](pic/res.png)
 

@@ -1,0 +1,5 @@
+---
+
+- hosts: laptop
+  roles:
+    - { role: roles/libvirtd, become: true, become_method: sudo }

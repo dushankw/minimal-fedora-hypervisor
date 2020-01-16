@@ -1,0 +1,183 @@
+---
+  - name: kill firewalld
+    systemd: state=stopped enabled=no masked=yes name=firewalld
+
+  - name: remove firewalld
+    dnf:
+      name: firewalld
+      state: absent
+
+  - name: install iptables services
+    dnf:
+      name: iptables-services
+      state: present
+
+  - name: install required packages for virtualisation
+    dnf:
+      name:
+        - @virtualization
+        - libguestfs
+        - libguestfs-tools
+        - bridge-utils
+        - virt-top
+        - ebtables
+        - libvirt-daemon-config-nwfilter
+      state: latest
+
+  - name: adding existing user '{{ user }}' to libvirt group (so it can speak to libvirtd over its socket without being root)
+    user:
+      name: '{{ user }}'
+      groups: libvirt
+      append: yes
+
+  - name: |
+    destroy the default network, libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system
+    (and the default network will manipulate iptables without your permission)
+    virt_net:
+      command: destroy
+      name: default
+
+  - name: disable default network auto-start
+    virt_net:
+      autostart: no
+      name: default
+
+  - name: |
+      create a dummy network interface that we will use as a member of a bridge that will be supplied to VMs
+      the reason we are doing this is because a bridge inherits the MAC address of the first interface that is attached,
+      so it will keep changing unless the same VM is always powered on first or we supply a dummy, libvirtd expects MAC addresses for KVM to be of the form 52:54:00:xx:xx:xx
+    copy:
+      src: "etc/NetworkManager/dispatcher.d/99-virbr10"
+      dest: "/etc/NetworkManager/dispatcher.d/99-virbr10"
+      owner: "root"
+      group: "root"
+      mode: 0755
+
+  - name: configure the bridge
+    copy:
+      src: "etc/sysconfig/network-scripts/ifcfg-virbr10"
+      dest: "/etc/sysconfig/network-scripts/ifcfg-virbr10"
+      owner: "root"
+      group: "root"
+      mode: 0644
+
+  - name: configure packet forwarding
+    copy:
+      src: "etc/sysctl.d/98-ipforward.conf"
+      dest: "/etc/sysctl.d/98-ipforward.conf"
+      owner: "root"
+      group: "root"
+      mode: 0644
+
+  - name: disable netfilter for bridges (see https://bugzilla.redhat.com/show_bug.cgi?id=512206)
+    copy:
+      src: "etc/sysctl.d/97-bridge.conf"
+      dest: "/etc/sysctl.d/97-bridge.conf"
+      owner: "root"
+      group: "root"
+      mode: 0644
+
+  - name: configure udev to load sysctl booleans for bridges when the bridge kernel module is loaded
+    copy:
+      src: "etc/udev/rules.d/99-bridge.rules"
+      dest: "/etc/udev/rules.d/99-bridge.rules"
+      owner: "root"
+      group: "root"
+      mode: 0644
+
+  - name: configure iptables (including rules for masquerading traffic to/from VMs and routing for the bridge)
+    copy:
+      src: "etc/sysconfig/iptables"
+      dest: "/etc/sysconfig/iptables"
+      owner: "root"
+      group: "root"
+      mode: 0600
+
+  - name: configure ip6tables (drop all traffic as IPv6 is not in use)
+    copy:
+      src: "etc/sysconfig/ip6tables"
+      dest: "/etc/sysconfig/ip6tables"
+      owner: "root"
+      group: "root"
+      mode: 0600
+
+  - name: enable and start iptables via systemd
+    systemd: state=started enabled=yes masked=no name=iptables
+
+  - name: enable and start ip6tables via systemd
+    systemd: state=started enabled=yes masked=no name=ip6tables
+
+  - name: make dnsmasq dir in /var/lib
+    file:
+      path: "/var/lib/dnsmasq"
+      state: "directory"
+      owner: "root"
+      group: "root"
+      mode: 0755
+
+  - name: make virbr10 dir in /var/lib/dnsmasq
+    file:
+      path: "/var/lib/dnsmasq/virbr10"
+      state: "directory"
+      owner: "root"
+      group: "root"
+      mode: 0755
+
+  - name: create virbr10 hostsfile
+    copy:
+      content: ""
+      dest: /var/lib/dnsmasq/virbr10/hostsfile
+      force: no
+      group: root
+      owner: root
+      mode: 0644
+
+  - name: create virbr10 lease file
+    copy:
+      content: ""
+      dest: /var/lib/dnsmasq/virbr10/leases
+      force: no
+      group: root
+      owner: root
+      mode: 0644
+
+  - name: copy dnsmasq config
+    copy:
+      src: "var/lib/dnsmasq/virbr10/dnsmasq.conf"
+      dest: "/var/lib/dnsmasq/virbr10/dnsmasq.conf"
+      owner: "root"
+      group: "root"
+      mode: 0644
+
+  - name: copy systemd unit for dnsmasq
+    copy:
+      src: "etc/systemd/system/dnsmasq@.service"
+      dest: "/etc/systemd/system/dnsmasq@.service"
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Limit access to libvirtd control sockets
+    lineinfile:
+      dest: "/etc/libvirt/libvirtd.conf"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - { regexp: '^unix_sock_group', line: 'unix_sock_group = "libvirt"' }
+      - { regexp: '^unix_sock_ro_perms', line: 'unix_sock_ro_perms = "0770"' }
+      - { regexp: '^unix_sock_rw_perms', line: 'unix_sock_rw_perms = "0770"' }
+      - { regexp: '^unix_sock_admin_perms', line: 'unix_sock_admin_perms = "0700"' }
+
+  - name: Harden qemu settings
+    lineinfile:
+      dest: "/etc/libvirt/qemu.conf"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - { regexp: '^vnc_auto_unix_socket', line: 'vnc_auto_unix_socket = 1' }
+      - { regexp: '^spice_auto_unix_socket', line: 'spice_auto_unix_socket = 1' }
+      - { regexp: '^security_driver', line: 'security_driver = "selinux"' }
+      - { regexp: '^security_default_confined', line: 'security_default_confined = 1' }
+      - { regexp: '^security_require_confined', line: 'security_require_confined = 1' }
+      - { regexp: '^set_process_name', line: 'set_process_name = 1' }
+      - { regexp: '^seccomp_sandbox', line: 'seccomp_sandbox = 1' }

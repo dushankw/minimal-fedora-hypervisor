@@ -20,5 +20,5 @@ See `host_vars/127.0.0.1`
 ### usage
 
 0. `sudo dnf -y update`
-1. `sudo dnf -y install ansible make python3-dnf python3-libselinux`
+1. `sudo dnf -y install ansible make python3-dnf python3-libselinux python3-libvirt python3-lxml`
 2. `make`

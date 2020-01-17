@@ -2,8 +2,6 @@
 
 Ansible tooling to configure libvirtd in a secure and minimal way under Fedora
 
-**Still a work in progress**
-
 **This tooling is written to work with NetworkManager, it will not work if you are not using it**
 
 ### credit
@@ -18,6 +16,8 @@ Portions of this guide (some networking stuff) refer to documentation found on h
 ### configuration
 
 See `host_vars/127.0.0.1`
+
+You will need to modify to match your environment
 
 ### usage
 

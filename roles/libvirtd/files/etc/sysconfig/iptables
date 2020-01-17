@@ -1,0 +1,41 @@
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# DHCP packets sent to VMs have no checksum (due to a longstanding bug)
+-A POSTROUTING -o virbr10 -p udp -m udp --dport 68 -j CHECKSUM --checksum-fill
+COMMIT
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+# Do not masquerade to these reserved address blocks
+-A POSTROUTING -s 192.168.100.0/24 -d 224.0.0.0/24 -j RETURN
+-A POSTROUTING -s 192.168.100.0/24 -d 255.255.255.255/32 -j RETURN
+# Masquerade all packets going from VMs to the LAN/Internet
+-A POSTROUTING -s 192.168.100.0/24 ! -d 192.168.100.0/24 -p tcp -j MASQUERADE --to-ports 1024-65535
+-A POSTROUTING -s 192.168.100.0/24 ! -d 192.168.100.0/24 -p udp -j MASQUERADE --to-ports 1024-65535
+-A POSTROUTING -s 192.168.100.0/24 ! -d 192.168.100.0/24 -j MASQUERADE
+COMMIT
+
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+# Allow basic INPUT traffic
+-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+# Accept DNS (port 53) and DHCP (port 67) packets from VMs via bridge interface
+-A INPUT -i virbr10 -p udp -m udp -m multiport --dports 53,67 -j ACCEPT
+-A INPUT -i virbr10 -p tcp -m tcp -m multiport --dports 53,67 -j ACCEPT
+
+# Allow established traffic to the private subnet
+-A FORWARD -d 192.168.100.0/24 -o virbr10 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# Allow outbound traffic from the private subnet
+-A FORWARD -s 192.168.100.0/24 -i virbr10 -j ACCEPT
+# Allow traffic between virtual machines
+-A FORWARD -i virbr10 -o virbr10 -j ACCEPT
+COMMIT

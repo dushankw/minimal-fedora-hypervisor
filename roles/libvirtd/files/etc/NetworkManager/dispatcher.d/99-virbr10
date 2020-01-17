@@ -1,0 +1,12 @@
+#!/bin/sh
+[ "$1" != "virbr10" ] && exit 0
+case "$2" in
+    "up")
+        /sbin/ip link add virbr10-dummy address 52:54:00:00:00:a1 type dummy
+        /usr/sbin/brctl addif virbr10 virbr10-dummy
+    /bin/systemctl start dnsmasq@virbr10.service || :
+        ;;
+    "down")
+        /bin/systemctl stop dnsmasq@virbr10.service || :
+        ;;
+esac

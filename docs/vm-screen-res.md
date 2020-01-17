@@ -4,6 +4,14 @@ The virtual display may present only lower resolutions, to fix this requires a f
 
 NOTE: It is assumed you are using Xorg and not Wayland as your display server within the VM
 
+##### virt-manager auto-resizing
+
+Enable the setting "Resize guest with window" in virt-manager via the "Edit > Preferences > Console" menu
+
+This may be all you need to do (though you likely still want to increase the video memory)! If this does not work, read on.
+
+![virt-manager display config](pic/res.png)
+
 ##### Increase the amount of video memory
 
 On the host issue `sudo virsh edit --domain $DOMAIN`
@@ -46,11 +54,3 @@ Section "Monitor"
     Option "PreferredMode" "2560x1440_60.00"
 EndSection
 ```
-
-##### virt-manager auto-resizing
-
-Enable the setting "Resize guest with window" in virt-manager
-
-This may be all you need to do!
-
-![virt-manager display config](pic/res.png)

@@ -128,18 +128,18 @@
       content: ""
       dest: /var/lib/dnsmasq/virbr10/hostsfile
       force: no
-      group: root
+      group: dnsmasq
       owner: root
-      mode: 0644
+      mode: 0664
 
   - name: create virbr10 lease file
     copy:
       content: ""
       dest: /var/lib/dnsmasq/virbr10/leases
       force: no
-      group: root
+      group: dnsmasq
       owner: root
-      mode: 0644
+      mode: 0664
 
   - name: copy dnsmasq config
     copy:

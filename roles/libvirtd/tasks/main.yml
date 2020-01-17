@@ -66,6 +66,7 @@
       owner: "root"
       group: "root"
       mode: 0644
+    notify: reload sysctl
 
   - name: disable netfilter for bridges (see https://bugzilla.redhat.com/show_bug.cgi?id=512206)
     copy:
@@ -74,6 +75,7 @@
       owner: "root"
       group: "root"
       mode: 0644
+    notify: reload sysctl
 
   - name: configure udev to load sysctl booleans for bridges when the bridge kernel module is loaded
     copy:

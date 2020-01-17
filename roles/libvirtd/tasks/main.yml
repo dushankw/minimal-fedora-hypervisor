@@ -15,7 +15,7 @@
   - name: install required packages for virtualisation
     dnf:
       name:
-        - @virtualization
+        - '@virtualization'
         - libguestfs
         - libguestfs-tools
         - bridge-utils
@@ -30,9 +30,7 @@
       groups: libvirt
       append: yes
 
-  - name: |
-    destroy the default network, libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system
-    (and the default network will manipulate iptables without your permission)
+  - name: destroy the default network, libvirtd will configure a default NAT network, however my preference is to explicitly define and control networks on my system plus the default network will manipulate iptables without your permission
     virt_net:
       command: destroy
       name: default

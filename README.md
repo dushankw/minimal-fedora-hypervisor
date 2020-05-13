@@ -19,6 +19,12 @@ See `host_vars/127.0.0.1`
 
 You will need to modify to match your environment
 
+### warnings
+
+During the deployment there may be a period of time (between `firewalld` being disabled [only if it exists] and `iptables` being enabled) where there will be no `netfilter` configuration.
+
+This poses a security issue for a host directly accessible via the internet (any network services running [other than those binding localhost] will be exposed), at some point I will re-order things (and eliminate a possible race condition) to address this, though currently this project is specifically designed for local use where this is not a concern.
+
 ### usage
 
 0. `sudo dnf -y update`

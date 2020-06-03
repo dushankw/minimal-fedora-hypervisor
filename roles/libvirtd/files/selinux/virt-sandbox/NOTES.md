@@ -1,9 +1,9 @@
 # libvirt-sandbox
 
-https://fedoraproject.org/wiki/Features/VirtSandbox
-https://selinuxproject.org/page/NB_SandBox
-http://people.redhat.com/berrange/fosdem-2012/libvirt-sandbox-fosdem-2012.pdf
-https://www.berrange.com/posts/2012/01/17/building-application-sandboxes-with-libvirt-lxc-kvm/ (the developer acknowledges the total lack of SELinux support)
+* https://fedoraproject.org/wiki/Features/VirtSandbox
+* https://selinuxproject.org/page/NB_SandBox
+* http://people.redhat.com/berrange/fosdem-2012/libvirt-sandbox-fosdem-2012.pdf
+* https://www.berrange.com/posts/2012/01/17/building-application-sandboxes-with-libvirt-lxc-kvm/ (the developer acknowledges the total lack of SELinux support)
 
 ### Installing and basic use
 

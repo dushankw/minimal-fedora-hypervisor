@@ -1,0 +1,52 @@
+
+module virt_sandbox_dkw 1.0;
+
+require {
+	type user_home_t;
+	type gconf_home_t;
+	type config_home_t;
+	type screen_home_t;
+	type hostname_exec_t;
+	type sudo_exec_t;
+	type selinux_config_t;
+	type virt_home_t;
+	type thumb_home_t;
+	type svirt_t;
+	type var_lib_t;
+	type initrc_exec_t;
+	type data_home_t;
+	type pulseaudio_home_t;
+	type sysctl_fs_t;
+	type sssd_var_lib_t;
+	type proc_t;
+	type configfs_t;
+	type user_home_dir_t;
+	type sysctl_t;
+	type var_lib_nfs_t;
+	class file { getattr open read };
+	class dir { getattr read };
+	class filesystem getattr;
+}
+
+#============= svirt_t ==============
+allow svirt_t config_home_t:dir read;
+allow svirt_t configfs_t:dir getattr;
+allow svirt_t data_home_t:dir read;
+allow svirt_t gconf_home_t:dir read;
+allow svirt_t hostname_exec_t:file { getattr open read };
+allow svirt_t initrc_exec_t:file getattr;
+allow svirt_t proc_t:filesystem getattr;
+allow svirt_t pulseaudio_home_t:file getattr;
+allow svirt_t screen_home_t:file getattr;
+allow svirt_t selinux_config_t:dir read;
+allow svirt_t sssd_var_lib_t:dir read;
+allow svirt_t sudo_exec_t:file getattr;
+allow svirt_t sysctl_fs_t:dir read;
+allow svirt_t sysctl_t:dir read;
+allow svirt_t thumb_home_t:dir read;
+allow svirt_t user_home_dir_t:dir read;
+allow svirt_t user_home_t:dir read;
+allow svirt_t user_home_t:file { open read };
+allow svirt_t var_lib_nfs_t:dir read;
+allow svirt_t var_lib_t:dir read;
+allow svirt_t virt_home_t:file read;

@@ -26,6 +26,9 @@
         - selinux-policy-sandbox
       state: latest
 
+  - name: ensure libvirtd is running so calls to its APIs will succeed (and make sure it will run from the next boot)
+    systemd: state=started enabled=yes name=libvirtd
+
   - name: adding existing user '{{ user }}' to libvirt group (so it can speak to libvirtd over its socket without being root)
     user:
       name: '{{ user }}'

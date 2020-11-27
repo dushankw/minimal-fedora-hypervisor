@@ -25,6 +25,14 @@ During the deployment there may be a period of time (between `firewalld` being d
 
 This poses a security issue for a host directly accessible via the internet (any network services running [other than those binding localhost] will be exposed), at some point I will re-order things (and eliminate a possible race condition) to address this, though currently this project is specifically designed for local use where this is not a concern.
 
+### dns for virtual machines
+
+Your guests will need to be told that the Hypervisor provided DNS server is on `192.168.100.1:53535/UDP`
+
+The reason for this is Fedora 33 (and beyond) have moved to `systemd-resolvd` which claims the usual `53/UDP`
+
+In the future I may remove `dnsmasq` totally and leverage `systemd-resolvd` for the guests and host, but currently, this is the solution, PRs welcome
+
 ### usage
 
 0. `sudo dnf -y update`

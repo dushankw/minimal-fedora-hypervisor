@@ -90,6 +90,12 @@
       group: "root"
       mode: 0644
 
+  - name: enable and start iptables via systemd
+    systemd: state=started enabled=yes masked=no name=iptables
+
+  - name: enable and start ip6tables via systemd
+    systemd: state=started enabled=yes masked=no name=ip6tables
+
   - name: configure iptables (including rules for masquerading traffic to/from VMs and routing for the bridge)
     copy:
       src: "etc/sysconfig/iptables"
@@ -97,6 +103,7 @@
       owner: "root"
       group: "root"
       mode: 0600
+    notify: reload iptables
 
   - name: configure ip6tables (drop all traffic as IPv6 is not in use)
     copy:
@@ -105,12 +112,7 @@
       owner: "root"
       group: "root"
       mode: 0600
-
-  - name: enable and start iptables via systemd
-    systemd: state=started enabled=yes masked=no name=iptables
-
-  - name: enable and start ip6tables via systemd
-    systemd: state=started enabled=yes masked=no name=ip6tables
+    notify: reload ip6tables
 
   - name: make dnsmasq dir in /var/lib
     file:

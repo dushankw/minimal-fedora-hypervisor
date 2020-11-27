@@ -1,3 +1,9 @@
 ---
   - name: reload sysctl
     command: sysctl -p
+
+  - name: reload iptables
+    command: systemctl restart iptables
+
+  - name: reload ip6tables
+    command: systemctl restart ip6tables

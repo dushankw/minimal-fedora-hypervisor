@@ -1,0 +1,13 @@
+#!/bin/bash
+
+KEY="$HOME/.ssh/web-vm.pem"
+VM_IP='192.168.100.3'
+VM_NAME='web-clean'
+VIRSH_CMD='virsh -c qemu:///system'
+
+if [ "$($VIRSH_CMD list | grep "$VM_NAME" | awk '{print $3}')" != "running" ] ; then
+    $VIRSH_CMD start "$VM_NAME"
+    while ! nc -z "$VM_IP" 22 2> /dev/null ; do echo 'Waiting for VM to boot...' ; sleep 1 ; done
+fi
+
+ssh -i "$KEY" -4 -X "web@$VM_IP" firefox &

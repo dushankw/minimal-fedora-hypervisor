@@ -10,8 +10,6 @@ Enable the setting "Resize guest with window" in virt-manager via the "Edit > Pr
 
 This may be all you need to do (though you likely still want to increase the video memory)! If this does not work, read on.
 
-![virt-manager display config](pic/res.png)
-
 ##### Increase the amount of video memory
 
 On the host issue `sudo virsh edit --domain $DOMAIN`

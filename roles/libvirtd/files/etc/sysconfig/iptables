@@ -28,9 +28,9 @@ COMMIT
 # Allow basic INPUT traffic
 -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -i lo -j ACCEPT
-# Accept DNS (port 53) and DHCP (port 67) packets from VMs via bridge interface
--A INPUT -i virbr10 -p udp -m udp -m multiport --dports 53,67 -j ACCEPT
--A INPUT -i virbr10 -p tcp -m tcp -m multiport --dports 53,67 -j ACCEPT
+# Accept DNS (port 53535 used to avoid conflict with sytemd-resolvd) and DHCP (port 67) packets from VMs via bridge interface
+-A INPUT -i virbr10 -p udp -m udp -m multiport --dports 53535,67 -j ACCEPT
+-A INPUT -i virbr10 -p tcp -m tcp -m multiport --dports 53535,67 -j ACCEPT
 
 # Allow established traffic to the private subnet
 -A FORWARD -d 192.168.100.0/24 -o virbr10 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT

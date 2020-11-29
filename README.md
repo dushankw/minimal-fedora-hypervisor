@@ -40,6 +40,8 @@ In the future I may remove `dnsmasq` totally and leverage `systemd-resolvd` for 
 2. `make`
 3. `sudo reboot`
 
+VMs can be created with the `mkvm.sh` script.
+
 ### useful settings
 
 ##### virt-manager

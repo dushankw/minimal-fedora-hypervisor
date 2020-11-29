@@ -39,3 +39,26 @@ In the future I may remove `dnsmasq` totally and leverage `systemd-resolvd` for 
 1. `sudo dnf -y install ansible make python3-dnf python3-libselinux python3-libvirt python3-lxml`
 2. `make`
 3. `sudo reboot`
+
+### useful settings
+
+##### virt-manager
+
+Enable the setting "Resize guest with window" in virt-manager via the "Edit > Preferences > Console" menu and supported guests should set their resolution automatically based on the virt-manager window size.
+
+##### ntp issues in guests
+
+If you hibernate your VMs a lot, you may find the clock gets out of sync and takes a while to drift back.
+
+Adding `makestep 1 -1` to `/etc/chrony.conf` will greatly reduce how many steps it takes to get back into sync.
+
+##### shrinking qcow2 volumes
+
+qcow2 volumes do not shrink once space is allocated, if you have deleted a bunch of stuff from within one, you need to resize it to free the actual space on disk
+
+**Make sure any VMs using the volume are off before you begin!**
+
+```
+qemu-img convert -O qcow2 original.qcow2 shrunk.qcow2
+mv -f shrunk.qcow2 original.qcow2
+```

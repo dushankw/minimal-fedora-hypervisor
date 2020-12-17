@@ -1,11 +1,11 @@
 ---
-  - name: kill firewalld
-    systemd: state=stopped enabled=no masked=yes name=firewalld
-
   - name: remove firewalld
     dnf:
       name: firewalld
       state: absent
+    notify:
+      - reload iptables
+      - reload ip6tables
 
   - name: install iptables services
     dnf:
